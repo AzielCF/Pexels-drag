@@ -1,0 +1,158 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+header {
+  line-height: 1.5;
+  max-height: 100vh;
+  text-align: center;
+}
+
+.logo {
+  display: block;
+  text-align: center;
+  margin: 0 auto 2rem;
+}
+
+nav {
+  width: 100%;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+nav a.router-link-exact-active {
+  color: var(--color-text);
+}
+
+nav a.router-link-exact-active:hover {
+  background-color: transparent;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0 1rem;
+  border-left: 1px solid var(--color-border);
+}
+
+nav a:first-of-type {
+  border: 0;
+}
+
+@media (min-width: 1024px) {
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  nav {
+    text-align: left;
+    margin-left: -1rem;
+    font-size: 1rem;
+
+    padding: 1rem 0;
+    margin-top: 1rem;
+  }
+}
+
+.dark-input {
+  background-color: #272727;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  outline: none;
+  margin-bottom: 15px;
+}
+
+.dark-input::placeholder {
+  color: #999;
+}
+
+
+/* GALERY */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.column {
+  flex: 25%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.image-container {
+  position: relative;
+}
+
+.image-container img {
+  width: 100%;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.download-button {
+  position: absolute;
+  text-align: center;
+  top: 10px;
+  right: 10px;
+  background-color: hsla(160, 100%, 37%, 1);
+  color: #fff;
+  padding: 5px 10px;
+  text-decoration: none;
+  border-radius: 5px;
+  z-index: 1;
+  max-width: 70%; /* Limita el ancho máximo del botón */
+  white-space: nowrap; /* Evita que el texto se desborde si el botón es muy pequeño */
+  overflow: hidden; /* Oculta cualquier contenido que se desborde */
+  cursor: pointer;
+}
+
+.download-button:hover {
+  background-color: rgb(0, 117, 78);
+}
+
+@media (max-width: 768px) {
+  .column {
+    flex: 50%;
+  }
+}
+
+/* SCROLL STYLE */
+/* Estilo para la barra de desplazamiento vertical */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333; /* Color de fondo del pulgar de la barra de desplazamiento */
+  border-radius: 6px; /* Borde redondeado del pulgar */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Color de fondo del pulgar al pasar el mouse sobre él */
+}
+
+/* Estilo para la barra de desplazamiento horizontal */
+::-webkit-scrollbar-track {
+  background-color: #222; /* Color de fondo de la pista de la barra de desplazamiento */
+}
+
+/* Estilo para los botones de la barra de desplazamiento (arriba y abajo) */
+::-webkit-scrollbar-button {
+  display: none; /* Ocultar los botones de la barra de desplazamiento */
+}
