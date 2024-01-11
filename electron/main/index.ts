@@ -1,19 +1,20 @@
 import { app, BrowserWindow, shell, ipcMain, dialog  } from 'electron'
 import { release } from 'node:os'
-<<<<<<< HEAD
-import { join } from 'node:path'
+import { createRequire } from "module"; 
+const require = createRequire(import.meta.url); 
+
 const fs = require('fs')
 const https = require('https')
 const axios = require('axios');
 const os = require('os');
 const path = require('path');
-=======
+
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
->>>>>>> 19995fcc1ff15259a0fc01b5ca03840f8b1f3f18
+
 
 // The built directory structure
 //
@@ -60,16 +61,11 @@ async function createWindow() {
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // nodeIntegration: true,
+      //nodeIntegration: true,
 
       // Consider using contextBridge.exposeInMainWorld
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-<<<<<<< HEAD
-      nodeIntegration: true,
-      contextIsolation: true,
-=======
-      // contextIsolation: false,
->>>>>>> 19995fcc1ff15259a0fc01b5ca03840f8b1f3f18
+      //contextIsolation: true,
     },
   })
 
