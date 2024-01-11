@@ -1,6 +1,5 @@
 # Pexels Drag: Aplicación de Descarga de Medios con Electron, Vue 3 y Vite
 
-
 ## Descripción
 
 Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vite. Utiliza la API de Pexels para permitir a los usuarios descargar imágenes y videos, guardarlos en un directorio definido y arrastrar las imágenes a cualquier programa de forma fácil.
@@ -28,6 +27,8 @@ Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vi
 - **Guardado de medios**: Los medios descargados se guardan en un directorio definido por el usuario.
 - **Arrastrar y soltar**: Los usuarios pueden arrastrar fácilmente las imágenes descargadas a cualquier programa.
 
+## :x: Fix 
+Existen algunas funcionalidades que aún no he implementado. Por el momento, la opción de descarga de videos está deshabilitada, dado que no he incorporado el botón de descarga. Es probable que lo añada en un futuro cercano. Si aún no lo he hecho y te gustaría contribuir, eres bienvenido a hacer un fork del proyecto.
 
 ## Cómo Empezar
 
@@ -39,6 +40,10 @@ Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vi
 VITE_PEXELS_API_KEY="YOUR_API"
 ```
 4. Inicia la aplicación con `npm run dev`.
+
+> [!WARNING]
+> Puede que haya un problema si no contiene la carpeta "/Pictures" en su usuario de windows por defecto, ya que puede estar alojado en onedrive y electron no abre esa carpeta, solo créela y estará solucionado. Lo resolveré pronto.
+
 ## Contribuciones
 
 Las contribuciones son bienvenidas. Por favor, abre un issue o realiza un pull request.
