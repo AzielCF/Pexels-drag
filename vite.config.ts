@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-/// <reference types="vitest" />
-import { rmSync } from 'node:fs'
-=======
 import fs from 'node:fs'
->>>>>>> 19995fcc1ff15259a0fc01b5ca03840f8b1f3f18
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron/simple'
@@ -46,20 +41,10 @@ export default defineConfig(({ command }) => {
             },
           },
         },
-<<<<<<< HEAD
-        {
-          entry: 'electron/preload/index.js',
-          onstart(options) {
-            // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete, 
-            // instead of restarting the entire Electron App.
-            options.reload()
-          },
-=======
         preload: {
           // Shortcut of `build.rollupOptions.input`.
           // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
           input: 'electron/preload/index.ts',
->>>>>>> 19995fcc1ff15259a0fc01b5ca03840f8b1f3f18
           vite: {
             build: {
               sourcemap: sourcemap ? 'inline' : undefined, // #332
@@ -85,8 +70,5 @@ export default defineConfig(({ command }) => {
       }
     })(),
     clearScreen: false,
-    test: {
-      globals: true
-    }
   }
 })
