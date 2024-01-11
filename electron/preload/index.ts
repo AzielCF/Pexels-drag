@@ -1,117 +1,72 @@
-import { ipcRenderer, contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld('ipcRenderer', withPrototype(ipcRenderer))
+// Agrega el event listener una sola vez cuando se carga el HTML
+window.addEventListener('DOMContentLoaded', () => {
+  ipcRenderer.on('selectedDirectory', (event, selectedDirectory, typeFile) => {
+    window.postMessage({ selectedDirectory, typeFile }, '*');
+  });
 
-// `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
-function withPrototype(obj: Record<string, any>) {
-  const protos = Object.getPrototypeOf(obj)
-
-  for (const [key, value] of Object.entries(protos)) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) continue
-
-    if (typeof value === 'function') {
-      // Some native APIs, like `NodeJS.EventEmitter['on']`, don't work in the Renderer process. Wrapping them into a function.
-      obj[key] = function (...args: any) {
-        return value.call(obj, ...args)
+  ipcRenderer.on('respuestaOnDirectoryStorage', (event, data) => {
+    if (data.error) {
+      console.error('Error al obtener la lista de archivos:', data.error);
+    } else {
+      if (data) {
+        window.postMessage({ "savedFilesList": data }, '*');
       }
-    } else {
-      obj[key] = value
     }
-  }
-  return obj
-}
+  });
+});
 
-// --------- Preload scripts loading ---------
-function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
-  return new Promise((resolve) => {
-    if (condition.includes(document.readyState)) {
-      resolve(true)
-    } else {
-      document.addEventListener('readystatechange', () => {
-        if (condition.includes(document.readyState)) {
-          resolve(true)
-        }
-      })
-    }
-  })
-}
+// Request the folder information from the main process
+ipcRenderer.send('get-folders');
 
-const safeDOM = {
-  append(parent: HTMLElement, child: HTMLElement) {
-    if (!Array.from(parent.children).find(e => e === child)) {
-      return parent.appendChild(child)
-    }
+    // Listen for the response from the main process
+    ipcRenderer.on('folders-obtained', (event, data) => {
+      const { videosFolder, imagesFolder } = data;
+      console.log(videosFolder)
+      window.postMessage({ videosFolder, imagesFolder }, '*');
+    });
+
+// Json backup data
+contextBridge.exposeInMainWorld('foldersObtained', async () => {
+  const data = await ipcRenderer.invoke('get-folders')
+  return data
+})
+
+contextBridge.exposeInMainWorld('electron', {
+  startDrag: (fileURL, fileName, fileFormat, fileType, fileDirectorySave) => {
+    ipcRenderer.send('ondragstart', fileURL, fileName, fileFormat, fileType, fileDirectorySave)
   },
-  remove(parent: HTMLElement, child: HTMLElement) {
-    if (Array.from(parent.children).find(e => e === child)) {
-      return parent.removeChild(child)
-    }
+
+  //  Cuando das click al boton descargar
+  downloadFile: (fileURL, fileID, fileName, fileFormat, fileType, fileDirectorySave) => {
+    ipcRenderer.send('onDownloadFile', fileURL, fileID, fileName, fileFormat, fileType, fileDirectorySave)
+    console.log(fileName)
   },
-}
 
-/**
- * https://tobiasahlin.com/spinkit
- * https://connoratherton.com/loaders
- * https://projects.lukehaas.me/css-loaders
- * https://matejkustec.github.io/SpinThatShit
- */
-function useLoading() {
-  const className = `loaders-css__square-spin`
-  const styleContent = `
-@keyframes square-spin {
-  25% { transform: perspective(100px) rotateX(180deg) rotateY(0); }
-  50% { transform: perspective(100px) rotateX(180deg) rotateY(180deg); }
-  75% { transform: perspective(100px) rotateX(0) rotateY(180deg); }
-  100% { transform: perspective(100px) rotateX(0) rotateY(0); }
-}
-.${className} > div {
-  animation-fill-mode: both;
-  width: 50px;
-  height: 50px;
-  background: #fff;
-  animation: square-spin 3s 0s cubic-bezier(0.09, 0.57, 0.49, 0.9) infinite;
-}
-.app-loading-wrap {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #282c34;
-  z-index: 9;
-}
-    `
-  const oStyle = document.createElement('style')
-  const oDiv = document.createElement('div')
+  selectDirectory: (typeFile) => {
+    ipcRenderer.send('onmodal', typeFile)
+  },
 
-  oStyle.id = 'app-loading-style'
-  oStyle.innerHTML = styleContent
-  oDiv.className = 'app-loading-wrap'
-  oDiv.innerHTML = `<div class="${className}"><div></div></div>`
+  getDirectoryLocalStorage : (photos, videos) => {
+    ipcRenderer.send('onDirectoryStorage', photos, videos)
+  },
+})
 
-  return {
-    appendLoading() {
-      safeDOM.append(document.head, oStyle)
-      safeDOM.append(document.body, oDiv)
-    },
-    removeLoading() {
-      safeDOM.remove(document.head, oStyle)
-      safeDOM.remove(document.body, oDiv)
-    },
-  }
-}
+// Envia el envento de que ya se a descargado el archivo
+ipcRenderer.on('file-downloaded', (event, fileName, filePath) => {
+    // Ejecuta código en el DOM para notificar al usuario
+    const customEvent = new CustomEvent('fileDownloaded', { detail: { fileName, filePath } });
+    window.dispatchEvent(customEvent);
+});
 
-// ----------------------------------------------------------------------
+// Envia el envento de showLoader
+ipcRenderer.on('showLoader', (event, state, fileID) => {
+  // Ejecuta código en el DOM para notificar al usuario
+  const customEvent = new CustomEvent('showLoader', { detail: { state, fileID } });
+  window.dispatchEvent(customEvent);
+});
 
-const { appendLoading, removeLoading } = useLoading()
-domReady().then(appendLoading)
+contextBridge.exposeInMainWorld('respuestaOnDirectoryStorage', async () => {
 
-window.onmessage = (ev) => {
-  ev.data.payload === 'removeLoading' && removeLoading()
-}
-
-setTimeout(removeLoading, 4999)
+})
