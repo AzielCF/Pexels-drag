@@ -1,8 +1,21 @@
 # Pexels Drag: Aplicación de Descarga de Medios con Electron, Vue 3 y Vite
 
+
 ## Descripción
 
 Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vite. Utiliza la API de Pexels para permitir a los usuarios descargar imágenes y videos, guardarlos en un directorio definido y arrastrar las imágenes a cualquier programa de forma fácil.
+
+#### Tecnologías Utilizadas
+<div align="left">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="40" alt="javascript logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" height="40" alt="typescript logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" height="40" alt="vuejs logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/electron/electron-original.svg" height="40" alt="electron logo"  />
+</div>
+
 ## Screenshots
 
 <div align="center">
@@ -14,11 +27,8 @@ Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vi
 - **Descarga de medios**: Los usuarios pueden descargar imágenes y videos desde la web utilizando la API de Pexels.
 - **Guardado de medios**: Los medios descargados se guardan en un directorio definido por el usuario.
 - **Arrastrar y soltar**: Los usuarios pueden arrastrar fácilmente las imágenes descargadas a cualquier programa.
-## Tecnologías Utilizadas
 
-- **Electron**: Un marco de trabajo que permite desarrollar aplicaciones de escritorio con tecnologías web.
-- **Vue 3**: Un marco de trabajo de JavaScript para construir interfaces de usuario.
-- **Vite**: Una herramienta de construcción que proporciona un entorno de desarrollo más rápido y eficiente.
+
 ## Cómo Empezar
 
 1. Clona el repositorio.
