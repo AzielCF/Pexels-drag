@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -32,7 +32,7 @@ watch(() => route.path, (newPath, oldPath) => {
 })
 </script>
 <template>
-  <header>
+  <header style="padding-top: 15px;">
     <h1 class="logo">PEXELS DRAG</h1>
     <p>Sientase libre de arrastrar cada elemento a cualquier programa o carpeta deseada.</p>
     <div class="wrapper">
@@ -40,9 +40,11 @@ watch(() => route.path, (newPath, oldPath) => {
         <div class="search-bar">
           <input class="dark-input" v-model="queryInit" @keydown.enter="searcher" placeholder="Buscar imagenes / videos">
         </div>
-        <RouterLink to="/">Fotos</RouterLink>
-        <RouterLink to="/videos">Videos</RouterLink>
-        <RouterLink to="/settings">Ajustes</RouterLink>
+        <div style="padding: 15px 0px 20px 0px;">
+          <RouterLink to="/">Fotos</RouterLink>
+          <RouterLink to="/videos">Videos</RouterLink>
+          <RouterLink to="/settings">Ajustes</RouterLink>
+        </div>
       </nav>
     </div>
   </header>
