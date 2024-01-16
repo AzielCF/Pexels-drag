@@ -4,7 +4,6 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-
   font-weight: normal;
 }
 
@@ -82,11 +81,12 @@ nav a:first-of-type {
   color: #999;
 }
 
-
 /* GALERY */
 .gallery {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 700px;
 }
 
 .column {
