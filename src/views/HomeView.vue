@@ -38,15 +38,15 @@ const searchPhotos = (isFromInput = false) => {
   isLoading.value = true;
 
   searcher.photos({ query: query.value, page: page.value, per_page: 12 })
-  .then((response: any) => {
-    photos.value = [...photos.value, ...response];
-    page.value += 1;
-    isLoading.value = false;
-  })
-  .catch((error) => {
-    // Maneja los errores aquí
-    console.error(error);
-  });
+    .then((response: any) => {
+      photos.value = [...photos.value, ...response];
+      page.value += 1;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      // Maneja los errores aquí
+      console.error(error);
+    });
 };
 
 
@@ -107,30 +107,30 @@ const groupedPhotos = computed(() => {
 const handleDragStart = (event: Event, fileURL: string, fileID: string) => {
   event.preventDefault();
   const fileName = `${fileID}[${photoDonwloadSize}]`;
-    window.electron.startDrag(fileURL, fileName, ".png", "img", directoryPhotosStorage)
-  };
+  window.electron.startDrag(fileURL, fileName, ".png", "img", directoryPhotosStorage)
+};
 
 const startDownloadFile = (fileURL: string, fileID: string) => {
   const fileName = `${fileID}[${photoDonwloadSize}]`;
-    window.electron.downloadFile(fileURL, fileID, fileName, ".png", "img", directoryPhotosStorage)
+  window.electron.downloadFile(fileURL, fileID, fileName, ".png", "img", directoryPhotosStorage)
 };
 
-const downloadedPhotoIds: Ref<any>= ref([]);
+const downloadedPhotoIds: Ref<any> = ref([]);
 
 //Obtiene los nombres(ID) de archivos del directorio de guardado
 window.addEventListener('message', (event) => {
-    const { savedFilesList } = event.data;  
-    downloadedPhotoIds.value = savedFilesList.photos
-      .filter((file: any) => file.includes('[') && file.includes(']')) // Filtrar los nombres de archivos que contienen []
-      .map((file: any) => file.split('[')[0]); // Extraer el id, que es la parte del nombre del archivo antes de [
+  const { savedFilesList } = event.data;
+  downloadedPhotoIds.value = savedFilesList.photos
+    .filter((file: any) => file.includes('[') && file.includes(']')) // Filtrar los nombres de archivos que contienen []
+    .map((file: any) => file.split('[')[0]); // Extraer el id, que es la parte del nombre del archivo antes de [
 })
 
 const isPhotoDraggable = (id: number) => {
-    return !downloadedPhotoIds.value.includes(id)
+  return !downloadedPhotoIds.value.includes(id)
 }
 
 // Escuchar el evento "fileDownloaded" (cuando se termina de descargar el archivo)
-window.addEventListener('fileDownloaded', function(event: any) {
+window.addEventListener('fileDownloaded', function (event: any) {
   const fileName = event.detail.fileName;
   const filePath = event.detail.filePath;
   refreshResults()
@@ -139,12 +139,12 @@ window.addEventListener('fileDownloaded', function(event: any) {
 });
 
 const showLoader = ref({
-    state: false,
-    photoId: undefined
-  })
+  state: false,
+  photoId: undefined
+})
 
 // Escuchar el evento "showLoader" (cuando se termina de descargar el archivo)
-window.addEventListener('showLoader', function(event: any) {
+window.addEventListener('showLoader', function (event: any) {
   showLoader.value = {
     state: event.detail.state,
     photoId: event.detail.fileID
@@ -158,7 +158,7 @@ const refreshResults = () => {
 </script>
 <template>
   <main>
-    
+
     <div class="gallery">
       <template v-for="group in groupedPhotos" :key="group.id">
         <div class="column">
@@ -171,18 +171,18 @@ const refreshResults = () => {
                 </div>
               </template>
 
-
               <a target="_blank" rel="noopener"
-                @dragstart="downloadedPhotoIds.includes(photo.id.toString()) && handleDragStart($event, photo.src[photoDonwloadSize], photo.id)"
-              >
-              <img :class="showLoader.state && photo.id == showLoader.photoId ? 'loader-opacity' : ''"
-                  :src="photo.src[photoPreviewSize]"
-                  :alt="photo.alt"
-                  :draggable="!isPhotoDraggable(photo.id.toString())">
-
+                @dragstart="downloadedPhotoIds.includes(photo.id.toString()) && handleDragStart($event, photo.src[photoDonwloadSize], photo.id)">
+                <img :class="showLoader.state && photo.id == showLoader.photoId ? 'loader-opacity' : ''"
+                  :src="photo.src[photoPreviewSize]" :alt="photo.alt" :draggable="!isPhotoDraggable(photo.id.toString())">
               </a>
+              
               <div v-if="isPhotoDraggable(photo.id.toString()) && photo.id != showLoader.photoId">
-                <a class="download-button" target="_blank" rel="noopener" @click="startDownloadFile(photo.src[photoDonwloadSize], photo.id)">Descargar</a>
+                <a class="download-button" target="_blank" rel="noopener"
+                  @click="startDownloadFile(photo.src[photoDonwloadSize], photo.id)">
+                  <img
+                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAU0lEQVR4nO3QsQqAMAxF0ffXHdM/v+KgQ0qtaCxIc6BLh3ch0jJwMtAgTzRCnsgDij/LBdOHEXs0fjNir8YHkZjxTiR2/ADU/Z0fKRTBND2gv9oAVZTQEh7ZErUAAAAASUVORK5CYII=">
+                </a>
               </div>
             </div>
           </template>
@@ -196,15 +196,19 @@ const refreshResults = () => {
 .loader-opacity {
   opacity: 40%;
 }
+
 .loader-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centra horizontalmente */
-  justify-content: center; /* Centra verticalmente */
+  align-items: center;
+  /* Centra horizontalmente */
+  justify-content: center;
+  /* Centra verticalmente */
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Centra tanto vertical como horizontalmente */
+  transform: translate(-50%, -50%);
+  /* Centra tanto vertical como horizontalmente */
   color: #FFFFFF;
 }
 
@@ -215,17 +219,23 @@ const refreshResults = () => {
   width: 2em;
   height: 2em;
   animation: spin 1s linear infinite;
-  margin-bottom: 10px; /* Espacio entre el loader y el texto */
+  margin-bottom: 10px;
+  /* Espacio entre el loader y el texto */
 }
 
 p {
-  margin: 0; /* Elimina el margen predeterminado del párrafo */
-  font-size: 1em; /* Tamaño del texto */
+  margin: 0;
+  /* Elimina el margen predeterminado del párrafo */
+  font-size: 1em;
+  /* Tamaño del texto */
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+  0% {
+    transform: rotate(0deg);
+  }
 
-</style>
+  100% {
+    transform: rotate(360deg);
+  }
+}</style>

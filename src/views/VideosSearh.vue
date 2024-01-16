@@ -189,7 +189,8 @@ const refreshResults = () => {
               </a>
               <div v-if="isVideoDraggable(video.id.toString()) && video.id != showLoader.videoId">
                 <a class="download-button" target="_blank" rel="noopener"
-                  @click="startDownloadFile(selectQuality(video.id), video.id)">Descargar</a>
+                  @click="startDownloadFile(selectQuality(video.id), video.id)"><img
+                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAU0lEQVR4nO3QsQqAMAxF0ffXHdM/v+KgQ0qtaCxIc6BLh3ch0jJwMtAgTzRCnsgDij/LBdOHEXs0fjNir8YHkZjxTiR2/ADU/Z0fKRTBND2gv9oAVZTQEh7ZErUAAAAASUVORK5CYII="></a>
               </div>
             </div>
           </template>
