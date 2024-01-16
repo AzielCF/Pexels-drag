@@ -1,5 +1,6 @@
-<script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSearchStore } from '../stores/search'
 
@@ -8,27 +9,83 @@ const { query } = storeToRefs(store)
 const { searcher } = store
 
 const qualityVideoPrefer = 'hd';
-const photos = ref([]);
-const videos = ref([]);
-const columnCount = ref(3);
+const videos: Ref<any> = ref([]);
+const columnCount = ref(3); // Cuantas columnas máximo se verán
 
+const directoryPhotosStorage = localStorage.getItem('directorySavePhotos');
 const directoryVideosStorage = localStorage.getItem('directorySaveVideos');
 
-const searchVideos = () => {
-  searcher.videos({ query: query.value, per_page: 6 })
-  .then((response) => {
-    videos.value  = response
-  })
-  .catch((error) => {
-    // Maneja los errores aquí
-    console.error(error);
-  });
+const page = ref(1);
+const isLoading = ref(false);
+
+const searchVideos = (isFromInput = false) => {
+  if (isLoading.value) return;
+
+  // Si la búsqueda es desde un input, reinicia los resultados
+  if (isFromInput) {
+    videos.value = [];
+    page.value = 1;
+  }
+
+  isLoading.value = true;
+
+  searcher.videos({ query: query.value, page: page.value, per_page: 8 })
+    .then((response: any) => {
+      videos.value = [...videos.value, ...response];
+      page.value += 1;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      // Maneja los errores aquí
+      console.error(error);
+    });
 };
+
+
+const selectQuality = (videoId: string) => {
+  const videoObj = videos.value.find((video: any) => video.id === videoId);
+
+  if (videoObj && videoObj.video_files) {
+    const videoObjQualitys = videoObj.video_files;
+    let videoUrl;
+
+    if (videoObj.width > videoObj.height) {
+      // Video Horizontal
+      videoUrl = videoObjQualitys.find((video: any) => video.quality == qualityVideoPrefer && (video.width == 1920 || video.width == 2048)).link;
+    } else {
+      // Video Vertical
+      videoUrl = videoObjQualitys.find((video: any) => video.quality == qualityVideoPrefer && video.width < 1200).link;
+    }
+
+    return videoUrl;
+  }
+};
+
+const handleScroll = () => {
+  const scrollY = window.scrollY;
+  const documentHeight = document.documentElement.scrollHeight;
+  const windowHeight = window.innerHeight;
+
+  if (scrollY + windowHeight >= documentHeight - 200) {
+    searchVideos();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  searchVideos(); // Carga las primeras fotos al montar el componente
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+
+////////////////////////////////////////////
 
 const setupComponent = () => {
   updateColumnCount();
   window.addEventListener('resize', updateColumnCount);
-  searchVideos();
+  searchVideos(true);
 };
 
 onMounted(setupComponent);
@@ -48,44 +105,65 @@ const updateColumnCount = () => {
 
 const groupedVideos = computed(() => {
   const groups = [];
-  const totalVideos = videos.value.length;
-  const groupSize = Math.ceil(totalVideos / columnCount.value);
+  const totalPhotos = videos.value?.length;
+  const groupSize = Math.ceil(totalPhotos / columnCount.value);
 
-  for (let i = 0; i < totalVideos; i += groupSize) {
-    const group = videos.value.slice(i, i + groupSize);
+  for (let i = 0; i < totalPhotos; i += groupSize) {
+    const group = videos.value?.slice(i, i + groupSize);
     groups.push(group);
   }
-
   return groups;
 });
 
-const selectQuality = (videoId) => {
-  const videoObj = videos.value.find((video) => video.id === videoId);
-
-  if (videoObj && videoObj.video_files) {
-    const videoObjQualitys = videoObj.video_files;
-    let videoUrl;
-
-    if (videoObj.width > videoObj.height) {
-      // Video Horizontal
-      videoUrl = videoObjQualitys.find((video) => video.quality == qualityVideoPrefer && (video.width == 1920 || video.width == 2048)).link;
-    } else {
-      // Video Vertical
-      videoUrl = videoObjQualitys.find((video) => video.quality == qualityVideoPrefer && video.width < 1200).link;
-    }
-
-    return videoUrl;
-  }
-};
-
-const handleDragStart = (event, fileURL, fileName) => {
+const handleDragStart = (event: Event, fileURL: string, fileID: string) => {
   event.preventDefault();
+  const fileName = `${fileID}[${qualityVideoPrefer}]`;
   window.electron.startDrag(fileURL, fileName, ".mp4", "video", directoryVideosStorage);
 };
 
-const dragStart = (fileName) => {
-  event.preventDefault();
-  window.electron.startDrag(fileName);
+const startDownloadFile = (fileURL: string, fileID: string) => {
+  const fileName = `${fileID}[${qualityVideoPrefer}]`;
+  window.electron.downloadFile(fileURL, fileID, fileName, ".mp4", "video", directoryVideosStorage)
+};
+
+const downloadedVideoIds: Ref<any> = ref([]);
+
+//Obtiene los nombres(ID) de archivos del directorio de guardado
+window.addEventListener('message', (event) => {
+  const { savedFilesList } = event.data;
+  downloadedVideoIds.value = savedFilesList.videos
+    .filter((file: any) => file.includes('[') && file.includes(']')) // Filtrar los nombres de archivos que contienen []
+    .map((file: any) => file.split('[')[0]); // Extraer el id, que es la parte del nombre del archivo antes de [
+})
+
+const isVideoDraggable = (id: number) => {
+  return !downloadedVideoIds.value.includes(id)
+}
+
+// Escuchar el evento "fileDownloaded" (cuando se termina de descargar el archivo)
+window.addEventListener('fileDownloaded', function (event: any) {
+  const fileName = event.detail.fileName;
+  const filePath = event.detail.filePath;
+  refreshResults()
+  // Puedes mostrar una notificación al usuario o realizar otras acciones en el DOM aquí
+  console.log(`Archivo descargado: ${fileName}\nRuta: ${filePath}`);
+});
+
+const showLoader = ref({
+  state: false,
+  videoId: undefined
+})
+
+// Escuchar el evento "showLoader" (cuando se termina de descargar el archivo)
+window.addEventListener('showLoader', function (event: any) {
+  showLoader.value = {
+    state: event.detail.state,
+    videoId: event.detail.fileID
+  }
+});
+
+const refreshResults = () => {
+  window.electron.getDirectoryLocalStorage(directoryPhotosStorage, directoryVideosStorage)
 }
 
 </script>
@@ -98,9 +176,21 @@ const dragStart = (fileName) => {
         <div class="column">
           <template v-for="video in group" :key="video.id">
             <div class="image-container">
-              <a target="_blank" rel="noopener"  @dragstart="handleDragStart($event, selectQuality(video.id), video.id)" >
-                <img :src="video.image" :alt="video.alt">
+              <template v-if="showLoader.state && video.id == showLoader.videoId">
+                <div class="loader-container">
+                  <div class="loader"></div>
+                  <p>Descargando...</p>
+                </div>
+              </template>
+              <a target="_blank" rel="noopener"
+                @dragstart="downloadedVideoIds.includes(video.id.toString()) && handleDragStart($event, selectQuality(video.id), video.id)">
+                <img :class="showLoader.state && video.id == showLoader.videoId ? 'loader-opacity' : ''"
+                  :src="video.image" :alt="video.alt" :draggable="!isVideoDraggable(video.id.toString())">
               </a>
+              <div v-if="isVideoDraggable(video.id.toString()) && video.id != showLoader.videoId">
+                <a class="download-button" target="_blank" rel="noopener"
+                  @click="startDownloadFile(selectQuality(video.id), video.id)">Descargar</a>
+              </div>
             </div>
           </template>
         </div>
