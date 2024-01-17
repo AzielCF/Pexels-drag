@@ -1,4 +1,7 @@
 @import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 #app {
   max-width: 1280px;
@@ -97,6 +100,7 @@ nav a:first-of-type {
 
 .image-container {
   position: relative;
+  padding-bottom: 5px;
 }
 
 .image-container img {
