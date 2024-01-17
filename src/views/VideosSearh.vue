@@ -170,7 +170,7 @@ const refreshResults = () => {
 
 <template>
   <main>
-
+    <div v-if="isLoading">No es posible cargar el contenido.</div>
     <div class="gallery">
       <template v-for="group in groupedVideos" :key="group.id">
         <div class="column">
