@@ -27,9 +27,6 @@ Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vi
 - **Guardado de medios**: Los medios descargados se guardan en un directorio definido por el usuario.
 - **Arrastrar y soltar**: Los usuarios pueden arrastrar fácilmente las imágenes descargadas a cualquier programa.
 
-## :x: Fix 
-Existen algunas funcionalidades que aún no he implementado. Por el momento, la opción de descarga de videos está deshabilitada, dado que no he incorporado el botón de descarga. Es probable que lo añada en un futuro cercano. Si aún no lo he hecho y te gustaría contribuir, eres bienvenido a hacer un fork del proyecto.
-
 ## Cómo Empezar
 
 1. Clona el repositorio.
