@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, dialog  } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron'
 import { release } from 'node:os'
 import { createRequire } from "module"; 
 const require = createRequire(import.meta.url); 
@@ -14,7 +14,6 @@ import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
 
 // The built directory structure
 //
@@ -58,6 +57,12 @@ async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
     icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#333333',
+      symbolColor: '#fff',
+      height: 40
+    },
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -95,7 +100,7 @@ async function createWindow() {
 const iconName = "drag-and-drop.png"
 const icon = fs.createWriteStream(iconName)
 
-https.get('https://img.icons8.com/ios/452/drag-and-drop.png', (response) => {
+https.get('https://img.icons8.com/ios/50/drag-and-drop.png', (response) => {
   response.pipe(icon)
 })
 
