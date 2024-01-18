@@ -6,6 +6,12 @@ export const useSearchStore = defineStore('search', () => {
   const query = ref('ocean')
   const enter = ref(false)
 
+  const apiKeyValue = ref(import.meta.env.VITE_PEXELS_API_KEY);
+
+  if (!apiKeyValue.value) {
+    apiKeyValue.value = localStorage.getItem('PEXELS_API_KEY');
+  }
+
   interface SearchResult {
     photos: (params: object) => Promise<object>;
     videos: (params: object) => Promise<object>;
@@ -37,7 +43,7 @@ export const useSearchStore = defineStore('search', () => {
         url: uri,
         params: params,
         headers: {
-          Authorization: import.meta.env.VITE_PEXELS_API_KEY,
+          Authorization: apiKeyValue.value
         },
       };
   
@@ -51,5 +57,6 @@ export const useSearchStore = defineStore('search', () => {
     },
   };
 
-  return { query, enter, searcher }
+  
+  return { query, enter, searcher, apiKeyValue }
 })
