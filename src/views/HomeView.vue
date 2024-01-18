@@ -192,7 +192,7 @@ const refreshResults = () => {
     </div>
   </main>
 </template>
-<style lang="scss">
+<style>
 .loader-opacity {
   opacity: 40%;
 }
