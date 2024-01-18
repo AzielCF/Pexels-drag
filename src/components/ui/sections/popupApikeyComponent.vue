@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Inputapikeycomponent from '../../inputapikeycomponent.vue'
+import Inputapikeycomponent from '../../inputApiKeyComponent.vue'
 
 </script>
 <template>
