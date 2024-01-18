@@ -38,7 +38,7 @@ jobs:
         run: npm run build
 
       - name: Build Electron Release Files
-        run: npm run make
+        run: npm run package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
