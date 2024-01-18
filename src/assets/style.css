@@ -116,7 +116,7 @@ code {
   cursor: pointer;
 }
 
-.configApiPoppup {
+.configApiPopup {
   position: fixed;
   margin: auto;
   z-index: 999;
