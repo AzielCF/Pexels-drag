@@ -1,9 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia'
+import { useSearchStore } from '../stores/search'
+import buttonComponent from '../components/ui/elemets/buttonComponent.vue';
 
-const folders = ref('')
+const store = useSearchStore();
+const { apiKeyValue } = storeToRefs(store)
+
 const directoryPhotos = ref('');
 const directoryVideos = ref('');
+
+if (!apiKeyValue.value) {
+  apiKeyValue.value = localStorage.getItem('PEXELS_API_KEY');
+}
+
+// --------------------------------
 
 const directoryPhotosStorage = localStorage.getItem('directorySavePhotos');
 const directoryVideosStorage = localStorage.getItem('directorySaveVideos');
@@ -46,41 +57,46 @@ window.addEventListener('message', (event) => {
     localStorage.setItem('directorySaveVideos', selectedDirectory);
   }
 })
+
+
+const applyPexelsApiKey = () => {
+  if(apiKeyValue.value){
+    localStorage.setItem('PEXELS_API_KEY', apiKeyValue.value)
+  } else {
+    console.error('Campo sin valor.')
+  }
+}
 </script>
 
 <template>
   <main>
-    <h2>Ajustes</h2>
-    <div>
-      <span>Directorio fotos</span>
+    <h2 class="text-2xl">Ajustes</h2>
+
+    <div style="border-bottom: 1px solid #7a7a7a; margin: 20px 0px 20px 0px;" />
+
+    <div class="section-input">
+      <label>Apikey</label>
       <div class="section-directory">
-        <input class="dark-input" v-model="directoryPhotos" placeholder="Directorio">
-        <button class="btn-select" @click="selectDirectory('photos')">Seleccionar</button>
+        <input class="dark-input" type="password" v-model="apiKeyValue" placeholder="Api Key">
+        <buttonComponent @click="applyPexelsApiKey()" valueName="Aplicar"/>
       </div>
     </div>
-    <div>
-      <span>Directorio vídeos</span>
+
+    <div style="border-bottom: 1px solid #7a7a7a; margin: 20px 0px 20px 0px;" />
+
+    <div class="section-input">
+      <label>Directorio fotos</label>
+      <div class="section-directory">
+        <input class="dark-input" v-model="directoryPhotos" placeholder="Directorio">
+        <buttonComponent @click="selectDirectory('photos')" valueName="Seleccionar"/>
+      </div>
+    </div>
+    <div class="section-input">
+      <label>Directorio vídeos</label>
       <div class="section-directory">
         <input class="dark-input" v-model="directoryVideos" placeholder="Directorio">
-        <button class="btn-select" @click="selectDirectory('video')">Seleccionar</button>
+        <buttonComponent @click="selectDirectory('video')" valueName="Seleccionar"/>
       </div>
     </div>
   </main>
 </template>
-
-<style>
-.section-directory {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-select {
-  background-color: rgb(54, 54, 54);
-  color: white;
-  box-shadow: none;
-  height: 35px;
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-}
-</style>
