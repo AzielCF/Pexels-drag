@@ -18,7 +18,7 @@ Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vi
 ## Screenshots
 
 <div align="center">
-  <img height="400" src="https://res.cloudinary.com/dktwu41vm/image/upload/f_auto,q_auto/svgpciuomc2nfkjqqupc"  />
+  <img height="400" src="https://res.cloudinary.com/dktwu41vm/image/upload/f_auto,q_auto/rdzlisowbpes52c47yem"  />
 </div>
 
 ## Características
