@@ -29,7 +29,7 @@ const searchVideos = (isFromInput = false) => {
 
   isLoading.value = true;
 
-  searcher.videos({ query: query.value, page: page.value, per_page: 8 })
+  searcher.videos({ query: query.value, page: page.value, per_page: 9 })
     .then((response: any) => {
       videos.value = [...videos.value, ...response];
       page.value += 1;
@@ -66,7 +66,7 @@ const handleScroll = () => {
   const documentHeight = document.documentElement.scrollHeight;
   const windowHeight = window.innerHeight;
 
-  if (scrollY + windowHeight >= documentHeight - 200) {
+  if (scrollY + windowHeight >= documentHeight / 2) {
     searchVideos();
   }
 };
@@ -104,15 +104,15 @@ const updateColumnCount = () => {
 };
 
 const groupedVideos = computed(() => {
-  const groups = [];
-  const totalPhotos = videos.value?.length;
-  const groupSize = Math.ceil(totalPhotos / columnCount.value);
+  const columns: Array<Array<any>>= Array.from({ length: columnCount.value }, () => []);
+  const totalVideos = videos.value?.length;
 
-  for (let i = 0; i < totalPhotos; i += groupSize) {
-    const group = videos.value?.slice(i, i + groupSize);
-    groups.push(group);
+  for (let i = 0; i < totalVideos; i++) {
+    const columnIndex = i % columnCount.value;
+    columns[columnIndex].push(videos.value[i]);
   }
-  return groups;
+
+  return columns;
 });
 
 const handleDragStart = (event: Event, fileURL: string, fileID: string) => {
