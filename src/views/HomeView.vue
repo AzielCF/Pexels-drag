@@ -8,7 +8,7 @@ const store = useSearchStore();
 const { query } = storeToRefs(store)
 const { searcher } = store
 
-const photos: Ref<any> = ref([]);
+const photos: Ref<object[]> = ref([]);
 const columnCount = ref(3); // Cuantas columnas máximo se verán
 const directoryPhotosStorage = localStorage.getItem('directorySavePhotos');
 const directoryVideosStorage = localStorage.getItem('directorySaveVideos');
@@ -18,13 +18,6 @@ const photoPreviewSize = "small"
 
 const page = ref(1);
 const isLoading = ref(false);
-
-/* const searchPhotos = () => {
-  searcher.photos({ query: query.value, page: 1, per_page: 12 }).then(response => {
-    photos.value = response;
-  });
-};
-*/
 
 const searchPhotos = (isFromInput = false) => {
   if (isLoading.value) return;
@@ -55,7 +48,7 @@ const handleScroll = () => {
   const documentHeight = document.documentElement.scrollHeight;
   const windowHeight = window.innerHeight;
 
-  if (scrollY + windowHeight >= documentHeight - 200) {
+  if (scrollY + windowHeight >= documentHeight / 2) {
     searchPhotos();
   }
 };
@@ -93,15 +86,15 @@ const updateColumnCount = () => {
 };
 
 const groupedPhotos = computed(() => {
-  const groups = [];
+  const columns: Array<Array<any>>= Array.from({ length: columnCount.value }, () => []);
   const totalPhotos = photos.value?.length;
-  const groupSize = Math.ceil(totalPhotos / columnCount.value);
 
-  for (let i = 0; i < totalPhotos; i += groupSize) {
-    const group = photos.value?.slice(i, i + groupSize);
-    groups.push(group);
+  for (let i = 0; i < totalPhotos; i++) {
+    const columnIndex = i % columnCount.value;
+    columns[columnIndex].push(photos.value[i]);
   }
-  return groups;
+
+  return columns;
 });
 
 const handleDragStart = (event: Event, fileURL: string, fileID: string) => {
