@@ -6,7 +6,8 @@ import { useSearchStore } from './stores/search'
 import { useRoute } from 'vue-router'
 import CustomTitleBarComponent from './components/customTitleBarComponent.vue'
 import PopupApikeyComponent from './components/ui/sections/popupApikeyComponent.vue'
-import InpurSearcherComponent from './components/inpurSearcherComponent.vue'
+import InputSearcherComponent from './components/inputSearcherComponent.vue'
+import HeaderMainComponent from './components/ui/sections/headerMainComponent.vue'
 
 const store = useSearchStore()
 const { apiKeyValue } = storeToRefs(store)
@@ -27,17 +28,12 @@ watch(() => route.path, (newPath, oldPath) => {
   <CustomTitleBarComponent />
   <PopupApikeyComponent v-if="!apiKeyValue" />
 
-  <header class="pt-10 pb-8 ">
-    <h1 class="text-4xl">PEXELS DRAG</h1>
-    <p class="text-md pt-4">Sientase libre de arrastrar cada elemento a cualquier programa o carpeta deseada.</p>
-  </header>
-  <InpurSearcherComponent :routeState="route"/>
-  <nav class="flex place-content-center">
-    <div class="pb-6">
+  <HeaderMainComponent/>
+  <InputSearcherComponent :routeState="route"/>
+  <nav class="flex place-content-center pb-6">
       <RouterLink to="/">Fotos</RouterLink>
       <RouterLink to="/videos">Vídeos</RouterLink>
       <RouterLink to="/settings">Ajustes</RouterLink>
-    </div>
   </nav>
 
   <RouterView class="flex place-content-center flex-wrap text-center" v-if="apiKeyValue" />
