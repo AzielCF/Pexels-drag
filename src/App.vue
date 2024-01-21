@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import { watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSearchStore } from './stores/search'
@@ -8,6 +8,7 @@ import CustomTitleBarComponent from './components/customTitleBarComponent.vue'
 import PopupApikeyComponent from './components/ui/sections/popupApikeyComponent.vue'
 import InputSearcherComponent from './components/inputSearcherComponent.vue'
 import HeaderMainComponent from './components/ui/sections/headerMainComponent.vue'
+import navMainComponent from './components/ui/sections/navMainComponent.vue'
 
 const store = useSearchStore()
 const { apiKeyValue } = storeToRefs(store)
@@ -30,11 +31,6 @@ watch(() => route.path, (newPath, oldPath) => {
 
   <HeaderMainComponent/>
   <InputSearcherComponent :routeState="route"/>
-  <nav class="flex place-content-center pb-6">
-      <RouterLink to="/">Fotos</RouterLink>
-      <RouterLink to="/videos">Vídeos</RouterLink>
-      <RouterLink to="/settings">Ajustes</RouterLink>
-  </nav>
-
+  <navMainComponent/>
   <RouterView class="flex place-content-center flex-wrap text-center" v-if="apiKeyValue" />
 </template>
