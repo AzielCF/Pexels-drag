@@ -11,11 +11,8 @@ const directoryPhotosStorage = localStorage.getItem('directorySavePhotos')
 const directoryVideosStorage = localStorage.getItem('directorySaveVideos')
 
 const searcher = () => {
-  store.query = queryInit.value
-  // Lógica para buscar videos
+  query.value = queryInit.value
   window.electron.getDirectoryLocalStorage(directoryPhotosStorage, directoryVideosStorage)
-  console.log('Buscar videos:', query.value);
-  // Resto de tu código para buscar videos
 }
 
 defineProps({
