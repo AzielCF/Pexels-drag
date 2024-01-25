@@ -9,7 +9,7 @@ interface ShowLoader {
 
 export function useMediaSearch(mediaType: 'photos' | 'videos') {
   const store = useSearchStore();
-  const { query } = storeToRefs(store);
+  const { query, orientation } = storeToRefs(store);
   const { searcher } = store;
 
   const mediaItems = ref<any[]>([]);
@@ -32,7 +32,6 @@ export function useMediaSearch(mediaType: 'photos' | 'videos') {
     isLoading.value = true;
 
     const searchOptions = {
-      query: query.value,
       page: page.value,
       per_page: mediaType === 'photos' ? 12 : 9,
     };
@@ -161,10 +160,10 @@ export function useMediaSearch(mediaType: 'photos' | 'videos') {
     window.removeEventListener('scroll', handleScroll);
   });
 
-  watch(query, () => {
+  watch([query, orientation], () => {
     setupComponent();
-  });
-
+  }, { immediate: true });
+  
   onMounted(setupComponent);
 
   return {
