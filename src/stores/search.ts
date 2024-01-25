@@ -3,8 +3,10 @@ import { defineStore } from 'pinia'
 import axios from 'axios';
 
 export const useSearchStore = defineStore('search', () => {
-  const query = ref('ocean')
-  const enter = ref(false)
+  const defaultQuery = 'ocean';
+  const query = ref(defaultQuery);
+  const enter = ref(false);
+  const orientation = ref<'landscape' | 'portrait' | 'square' | undefined>(undefined);
 
   const apiKeyValue = ref(import.meta.env.VITE_PEXELS_API_KEY);
 
@@ -15,9 +17,9 @@ export const useSearchStore = defineStore('search', () => {
   interface SearchResult {
     photos: (params: object) => Promise<object>;
     videos: (params: object) => Promise<object>;
-    search: (type: 'photos' | 'videos', params: object) => Promise<object>;
+    search: (type: 'photos' | 'videos', params: { query?: string; orientation?: 'landscape' | 'portrait' | 'square' } & object) => Promise<object>;
   }
-  
+
   const searcher: SearchResult = {
     async photos(params) {
       return this.search('photos', params);
@@ -29,14 +31,19 @@ export const useSearchStore = defineStore('search', () => {
       let uri, endpoint;
   
       if (type === 'photos') {
-        uri = 'https://api.pexels.com/v1/search';
+        uri = 'https://api.pexels.com/v1/search?locale=es-ES';
         endpoint = 'photos';
       } else if (type === 'videos') {
-        uri = 'https://api.pexels.com/videos/search';
+        uri = 'https://api.pexels.com/videos/search?locale=es-ES';
         endpoint = 'videos';
       } else {
         throw new Error('Tipo no válido. Debe ser "photos" o "videos".');
       }
+
+      // Si query está vacío, usa el valor por defecto
+      params.query = query.value || defaultQuery;
+      // Agrega la orientación al objeto de parámetros
+      params.orientation = orientation.value;
   
       const options = {
         method: 'GET',
@@ -49,14 +56,13 @@ export const useSearchStore = defineStore('search', () => {
   
       try {
         const response = await axios.request(options);
-        return response.data[endpoint]; // Retorna fotos o videos según el tipo
+        return response.data[endpoint];
       } catch (error) {
         console.error(error);
-        throw error; // Propaga el error para que sea manejado por quien llama a la función
+        throw error;
       }
     },
   };
 
-  
-  return { query, enter, searcher, apiKeyValue }
+  return { query, enter, searcher, apiKeyValue, orientation }
 })
