@@ -1,35 +1,49 @@
-<script lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 
-export default {
-  props: ['options', 'modelValue'],
-  emits: ['update:modelValue'],
-  setup(props, { emit }) {
-    const open = ref(false);
-    const dropdown = ref(null);
-    const selectedOption = ref(props.options.find(option => option.value === props.modelValue) || {});
+interface Option {
+  name: string;
+  value: string | undefined;
+}
 
-    const selectOption = (option) => {
-      emit('update:modelValue', option.value);
-      selectedOption.value = option;
-      open.value = false;
-    };
-
-    const closeDropdown = (event) => {
-      if (!dropdown.value.contains(event.target)) {
-        open.value = false;
-      }
-    };
-
-    onMounted(() => {
-      nextTick(() => {
-        document.addEventListener('click', closeDropdown);
-      });
-    });
-
-    return { open, selectOption, dropdown, selectedOption };
+const props = defineProps({
+  options: {
+    type: Array as () => Option[],
+    required: true
   },
+  modelValue: {
+    required: true
+  }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const open = ref(false);
+const dropdown = ref<HTMLElement | null>(null);
+const defaultOption: Option = { name: '', value: undefined }; // provide a default option
+const selectedOption = ref<Option>(props.options.find(option => option.value === props.modelValue) || defaultOption);
+
+const selectOption = (option: Option) => {
+  emit('update:modelValue', option.value);
+  selectedOption.value = option;
+  open.value = false;
 };
+
+const closeDropdown = (event: MouseEvent) => {
+  if (dropdown.value && !dropdown.value.contains(event.target as Node)) {
+    open.value = false;
+  }
+};
+
+onMounted(() => {
+  nextTick(() => {
+    document.addEventListener('click', closeDropdown);
+  });
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeDropdown);
+});
 </script>
 
 <template>
