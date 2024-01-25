@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import inputApiKeyComponent from '../../inputApikeyComponent.vue'
+import inputApikeyComponent from '../../inputApikeyComponent.vue'
 
 </script>
 <template>
@@ -10,7 +10,7 @@ import inputApiKeyComponent from '../../inputApikeyComponent.vue'
                     href="https://www.pexels.com/es-es/api/">Api Key de PEXELS</a> para funcionar!</h3>
         </header>
         <main class="w-full">
-            <inputApiKeyComponent/>
+            <inputApikeyComponent/>
         </main>
     </div>
 </template>
