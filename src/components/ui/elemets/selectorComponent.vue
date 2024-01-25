@@ -1,3 +1,37 @@
+<script lang="ts">
+import { ref, onMounted, nextTick } from 'vue';
+
+export default {
+  props: ['options', 'modelValue'],
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const open = ref(false);
+    const dropdown = ref(null);
+    const selectedOption = ref(props.options.find(option => option.value === props.modelValue) || {});
+
+    const selectOption = (option) => {
+      emit('update:modelValue', option.value);
+      selectedOption.value = option;
+      open.value = false;
+    };
+
+    const closeDropdown = (event) => {
+      if (!dropdown.value.contains(event.target)) {
+        open.value = false;
+      }
+    };
+
+    onMounted(() => {
+      nextTick(() => {
+        document.addEventListener('click', closeDropdown);
+      });
+    });
+
+    return { open, selectOption, dropdown, selectedOption };
+  },
+};
+</script>
+
 <template>
     <div class="relative inline-block text-left" @click="closeDropdown" ref="dropdown">
       <div>
@@ -29,37 +63,5 @@
     </div>
   </template>
   
-  <script>
-  import { ref, onMounted, nextTick } from 'vue';
-  
-  export default {
-    props: ['options', 'modelValue'],
-    emits: ['update:modelValue'],
-    setup(props, { emit }) {
-      const open = ref(false);
-      const dropdown = ref(null);
-      const selectedOption = ref(props.options.find(option => option.value === props.modelValue) || {});
-  
-      const selectOption = (option) => {
-        emit('update:modelValue', option.value);
-        selectedOption.value = option;
-        open.value = false;
-      };
-  
-      const closeDropdown = (event) => {
-        if (!dropdown.value.contains(event.target)) {
-          open.value = false;
-        }
-      };
-  
-      onMounted(() => {
-        nextTick(() => {
-          document.addEventListener('click', closeDropdown);
-        });
-      });
-  
-      return { open, selectOption, dropdown, selectedOption };
-    },
-  };
-  </script>
+
   
