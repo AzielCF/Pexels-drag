@@ -44,6 +44,3 @@ VITE_PEXELS_API_KEY="YOUR_API"
 ## Contribuciones
 
 Las contribuciones son bienvenidas. Por favor, abre un issue o realiza un pull request.
-## Licencia
-
-Esta aplicación está licenciada bajo [MIT](https://choosealicense.com/licenses/mit/).
