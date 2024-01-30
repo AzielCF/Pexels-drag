@@ -6,6 +6,8 @@ const apiKey = ref('')
 const errorMessage = ref('') // Mensaje de error
 const isApiKeyValid = ref(false)
 const showApiKey = ref(false)
+const isLoading = ref(false)
+const successMessage = ref('')
 
 const isValidApiKey = () => {
   // Verifica si la API key tiene al menos 50 caracteres y contiene al menos una letra mayúscula, una letra minúscula y un número
@@ -19,10 +21,14 @@ const applyPexelsApiKey = async () => {
   const url = 'https://api.pexels.com/v1/search?query=ocean'
   const uniqueUrl = `${url}&_=${Date.now()}`
 
-  // Resetear el mensaje de error
+  // Resetear los mensajes
   errorMessage.value = ''
-
+  successMessage.value = ''
+  
   if (isValidApiKey()) {
+    // Iniciar la carga
+    isLoading.value = true;
+
     // Realiza una solicitud a la API para validar la API key
     try {
       const response = await axios.get(uniqueUrl, {
@@ -33,14 +39,24 @@ const applyPexelsApiKey = async () => {
 
       // Si la solicitud es exitosa, guarda la API key en el localStorage y recarga la página
       if (response.status === 200) {
-        localStorage.setItem('PEXELS_API_KEY', apiKey.value)
-        location.reload()
+        localStorage.setItem('PEXELS_API_KEY', apiKey.value);
+        
+        // Mostrar mensaje de éxito
+        successMessage.value = 'API key válida. Accediendo...';
+        setTimeout(() => {
+          // Limpiar mensajes y cargar la página después de 2-3 segundos
+          successMessage.value = '';
+          isLoading.value = false;
+          location.reload();
+        }, 2000);
       }
     } catch (error) {
-      errorMessage.value = 'API key inválida.' // Muestra el mensaje de error en la interfaz
+      errorMessage.value = 'API key inválida, no es posible conectar.'; // Muestra el mensaje de error en la interfaz
+      isLoading.value = false;
     }
   } else {
-    errorMessage.value = 'Esto no es una API key válida' // Muestra el mensaje de error en la interfaz
+    errorMessage.value = 'Esto no es una API key válida'; // Muestra el mensaje de error en la interfaz
+    isLoading.value = false;
   }
 }
 
@@ -84,4 +100,8 @@ const handleKeyDown = (event: KeyboardEvent) => {
     </div>
   </div>
   <div class="text-red-500 mt-5 text-center" v-show="apiKey.trim() !== ''">{{ errorMessage }}</div>
+  <div class="text-green-500 mt-5 text-center" v-show="successMessage !== ''">{{ successMessage }}</div>
+  <div v-show="isLoading" class="text-center mt-3">
+    <span class="animate-spin">⚙️</span> Validando...
+  </div>
 </template>
