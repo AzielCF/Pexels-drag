@@ -29,8 +29,10 @@ watch(() => route.path, (newPath, oldPath) => {
   <CustomTitleBarComponent />
   <PopupApikeyComponent v-if="!apiKeyValue" />
 
-  <HeaderMainComponent/>
-  <InputSearcherComponent :routeState="route"/>
-  <navMainComponent/>
-  <RouterView class="flex place-content-center flex-wrap text-center" v-if="apiKeyValue" />
+  <template v-if="apiKeyValue">
+    <HeaderMainComponent />
+    <InputSearcherComponent :routeState="route" />
+    <navMainComponent />
+    <RouterView class="flex place-content-center flex-wrap text-center" />
+  </template>
 </template>
