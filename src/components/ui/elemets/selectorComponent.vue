@@ -7,6 +7,7 @@ interface Option {
 }
 
 const props = defineProps({
+  title: String,
   options: {
     type: Array as () => Option[],
     required: true
@@ -52,7 +53,7 @@ onUnmounted(() => {
         <div @click.stop="open = !open" type="button"
           class="items-center inline-flex justify-center w-full rounded-sm px-4 py-2 bg-[#2b2b2b] hover:bg-[#3f3f3f] text-sm font-medium text-white focus:outline-none cursor-pointer"
           id="options-menu" aria-haspopup="true" :aria-expanded="open">
-          <span class="mr-10">{{ selectedOption.name || 'Opciones' }}</span>
+          <span class="mr-10">{{ title }} {{ selectedOption.name || 'Opciones' }}</span>
           <svg :class="{ 'rotate-180': open }" class="-mr-1 ml-2 h-4 w-4 transform transition duration-200"
             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path fill="currentColor"
@@ -62,13 +63,13 @@ onUnmounted(() => {
       </div>
   
       <div v-if="open"
-        class="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-[#2b2b2b] ring-1 ring-black ring-opacity-5">
+        class="origin-top-left absolute left-0 mt-2 rounded-md shadow-lg bg-[#2b2b2b] ring-1 ring-black ring-opacity-5 z-50">
         <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-          <a v-for="option in options" :key="option.value" href="#" @click.stop="selectOption(option)"
+          <a v-for="option in options" :key="option.value" href="#" @click.prevent="selectOption(option)"
             class="px-4 py-2 text-sm text-white hover:bg-[#3f3f3f] flex justify-between" role="menuitem">
             <span>{{ option.name }}</span>
             <svg v-if="selectedOption.value === option.value" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" class="h-6 w-6 text-green-500">
+              stroke="currentColor" class="h-6 w-6 ml-4 text-green-500">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           </a>
