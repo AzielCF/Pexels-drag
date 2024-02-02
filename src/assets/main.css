@@ -118,7 +118,7 @@ nav a:first-of-type {
   padding: 5px 10px;
   text-decoration: none;
   border-radius: 5px;
-  z-index: 1;
+  z-index: 45;
   max-width: 70%; /* Limita el ancho máximo del botón */
   white-space: nowrap; /* Evita que el texto se desborde si el botón es muy pequeño */
   overflow: hidden; /* Oculta cualquier contenido que se desborde */
