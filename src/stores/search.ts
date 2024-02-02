@@ -5,7 +5,6 @@ import axios from 'axios';
 export const useSearchStore = defineStore('search', () => {
   const defaultQuery = 'ocean';
   const query = ref(defaultQuery);
-  const enter = ref(false);
   const orientation = ref<'landscape' | 'portrait' | 'square' | undefined>(undefined);
 
   const apiKeyValue = ref(import.meta.env.VITE_PEXELS_API_KEY);
@@ -64,5 +63,5 @@ export const useSearchStore = defineStore('search', () => {
     },
   };
 
-  return { query, enter, searcher, apiKeyValue, orientation }
+  return { query, searcher, apiKeyValue, orientation }
 })
