@@ -4,6 +4,9 @@
 
 Pexels Drag es una aplicación de escritorio construida con Electron, Vue 3 y Vite. Utiliza la API de Pexels para permitir a los usuarios descargar imágenes y videos, guardarlos en un directorio definido y arrastrar las imágenes a cualquier programa de forma fácil.
 
+> [!WARNING]
+> Este repositorio contiene una versión más ligera del nuevo proyecto, Drag Media. Dado que Drag Media es más completo y suficientemente distinto, este repositorio dejará de recibir mantenimiento. No obstante, este proyecto aún funciona y está disponible para su uso. Si decides utilizarlo, eres bienvenido.
+
 #### Tecnologías Utilizadas
 <div align="left">
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="40" alt="javascript logo"  />
